@@ -111,41 +111,41 @@ class _AddStudentsWidgetState extends State<AddStudentsWidget> {
                       prefixIcon: const Icon(Icons.phone),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
+                        borderSide: const BorderSide(
                             color: Color.fromARGB(255, 0, 0, 0), width: 3.0),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
+                        borderSide: const BorderSide(
                             color: Color.fromARGB(255, 119, 118, 118),
                             width: 3.0),
                       ),
                       hintText: 'Phone Number',
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
                       getImage();
                     },
-                    label: Text('+'),
-                    icon: Icon(Icons.photo),
+                    label: const Text('+'),
+                    icon: const Icon(Icons.photo),
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.grey),
                     ),
                   ),
 
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
                       AddButton(context);
                     },
-                    label: Text('Add'),
-                    icon: Icon(Icons.add),
+                    label: const Text('Add'),
+                    icon: const Icon(Icons.add),
                   )
                 ],
               ),
