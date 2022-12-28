@@ -1,8 +1,16 @@
 import 'package:bloclist/db/functions/db_functions.dart';
-import 'package:bloclist/db/model/data_model.dart';
-import 'package:bloclist/presentation/StudentList/students_nav.dart';
+import 'package:bloclist/presentation/Add/widgets/error_message.dart';
+import 'package:bloclist/presentation/Add/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+final nameController = TextEditingController();
+
+final ageController = TextEditingController();
+
+final placeController = TextEditingController();
+
+final phoneController = TextEditingController();
 
 class AddStudentsWidget extends StatefulWidget {
   AddStudentsWidget({super.key});
@@ -13,14 +21,6 @@ class AddStudentsWidget extends StatefulWidget {
 
 class _AddStudentsWidgetState extends State<AddStudentsWidget> {
   String? path;
-
-  final _nameController = TextEditingController();
-
-  final _ageController = TextEditingController();
-
-  final _placeController = TextEditingController();
-
-  final _phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -41,88 +41,32 @@ class _AddStudentsWidgetState extends State<AddStudentsWidget> {
                   const SizedBox(
                     height: 15,
                   ),
-                  TextField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.abc_rounded),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                            color: Color.fromARGB(255, 0, 0, 0), width: 3.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                            color: Color.fromARGB(255, 119, 118, 118),
-                            width: 3.0),
-                      ),
-                      hintText: 'Name',
-                    ),
-                  ),
+                  MyTextField(
+                      controller: nameController,
+                      hint: 'Name',
+                      icon: Icons.abc_rounded),
                   const SizedBox(
                     height: 8,
                   ),
                   // ignore: prefer_const_constructors
-                  TextField(
-                    controller: _ageController,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.numbers),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                            color: Color.fromARGB(255, 0, 0, 0), width: 3.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                            color: Color.fromARGB(255, 119, 118, 118),
-                            width: 3.0),
-                      ),
-                      hintText: 'Age',
-                    ),
-                  ),
+                  MyTextField(
+                      controller: ageController,
+                      hint: 'Age',
+                      icon: Icons.numbers),
                   const SizedBox(
                     height: 8,
                   ),
-                  TextField(
-                    controller: _placeController,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.location_pin),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                            color: Color.fromARGB(255, 0, 0, 0), width: 3.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                            color: Color.fromARGB(255, 119, 118, 118),
-                            width: 3.0),
-                      ),
-                      hintText: 'Place',
-                    ),
-                  ),
+                  MyTextField(
+                      controller: placeController,
+                      hint: 'Place',
+                      icon: Icons.location_pin),
                   const SizedBox(
                     height: 8,
                   ),
-                  TextField(
-                    controller: _phoneController,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.phone),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                            color: Color.fromARGB(255, 0, 0, 0), width: 3.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                            color: Color.fromARGB(255, 119, 118, 118),
-                            width: 3.0),
-                      ),
-                      hintText: 'Phone Number',
-                    ),
-                  ),
+                MyTextField(
+                      controller: phoneController,
+                      hint: 'Phone Number',
+                      icon: Icons.phone),
                   const SizedBox(
                     height: 8,
                   ),
@@ -157,65 +101,16 @@ class _AddStudentsWidgetState extends State<AddStudentsWidget> {
   }
 
   AddButton(BuildContext ctx) {
-    final _name = _nameController.text.trim();
-    final _age = _ageController.text.trim();
-    final _place = _placeController.text.trim();
-    final _phone = _phoneController.text.trim();
-    final _key = DateTime.now().toString();
-    final _image = path;
-    var field;
-
-    ErrorMessage() {
-      ScaffoldMessenger.of(ctx).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red[300],
-          content: Row(
-            children: [
-              Icon(Icons.error),
-              Text('$field is empty'),
-            ],
-          ),
-        ),
-      );
-    }
-
-    if (_name.isEmpty &&
-        _age.isEmpty &&
-        _place.isEmpty &&
-        _phone.isEmpty &&
-        _image!.isEmpty) {
-      field = 'Every field';
-      ErrorMessage();
-    } else if (_name.isEmpty) {
-      field = 'Name';
-      ErrorMessage();
-    } else if (_age.isEmpty) {
-      field = 'Age';
-      ErrorMessage();
-    } else if (_place.isEmpty) {
-      field = 'Place';
-      ErrorMessage();
-    } else if (_phone.isEmpty) {
-      field = 'Phone number';
-      ErrorMessage();
-    } else if (_image == null) {
-      field = 'Image';
-      ErrorMessage();
-    } else {
-      final _student = StudentModel(
-        name: _name,
-        age: _age,
-        place: _place,
-        phone: _phone,
-        key: _key,
-        image: _image,
-      );
-      addStudent(_student);
-      _nameController.clear();
-      _ageController.clear();
-      _placeController.clear();
-      _phoneController.clear();
-    }
+    List data = [
+      nameController.text.trim(),
+      ageController.text.trim(),
+      placeController.text.trim(),
+      phoneController.text.trim(),
+      path,
+      DateTime.now().toString()
+    ];
+    SnackBar mysnackBar = CheckError(data);
+    ScaffoldMessenger.of(context).showSnackBar(mysnackBar);
   }
 
   getImage() async {
