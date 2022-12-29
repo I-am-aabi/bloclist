@@ -14,7 +14,6 @@ final phoneController = TextEditingController();
 
 class AddStudentsWidget extends StatefulWidget {
   AddStudentsWidget({super.key});
-
   @override
   State<AddStudentsWidget> createState() => _AddStudentsWidgetState();
 }
@@ -32,7 +31,6 @@ class _AddStudentsWidgetState extends State<AddStudentsWidget> {
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                // ignore: prefer_const_literals_to_create_immutables
                 children: [
                   const Text(
                     'Add Students',
@@ -48,7 +46,6 @@ class _AddStudentsWidgetState extends State<AddStudentsWidget> {
                   const SizedBox(
                     height: 8,
                   ),
-                  // ignore: prefer_const_constructors
                   MyTextField(
                       controller: ageController,
                       hint: 'Age',
