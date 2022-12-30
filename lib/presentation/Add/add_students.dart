@@ -12,13 +12,8 @@ final placeController = TextEditingController();
 
 final phoneController = TextEditingController();
 
-class AddStudentsWidget extends StatefulWidget {
+class AddStudentsWidget extends StatelessWidget {
   AddStudentsWidget({super.key});
-  @override
-  State<AddStudentsWidget> createState() => _AddStudentsWidgetState();
-}
-
-class _AddStudentsWidgetState extends State<AddStudentsWidget> {
   String? path;
 
   @override
@@ -60,7 +55,7 @@ class _AddStudentsWidgetState extends State<AddStudentsWidget> {
                   const SizedBox(
                     height: 8,
                   ),
-                MyTextField(
+                  MyTextField(
                       controller: phoneController,
                       hint: 'Phone Number',
                       icon: Icons.phone),
@@ -77,7 +72,6 @@ class _AddStudentsWidgetState extends State<AddStudentsWidget> {
                       backgroundColor: MaterialStateProperty.all(Colors.grey),
                     ),
                   ),
-
                   const SizedBox(
                     height: 8,
                   ),
@@ -107,19 +101,16 @@ class _AddStudentsWidgetState extends State<AddStudentsWidget> {
       DateTime.now().toString()
     ];
     SnackBar mysnackBar = CheckError(data);
-    ScaffoldMessenger.of(context).showSnackBar(mysnackBar);
+    ScaffoldMessenger.of(ctx).showSnackBar(mysnackBar);
   }
 
   getImage() async {
-    var path;
-    final PickedFile =
+    final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (PickedFile == null) {
+    if (pickedFile == null) {
       return;
     } else {
-      setState(() {
-        this.path = PickedFile.path;
-      });
+      path = pickedFile.path;
     }
   }
 }
@@ -130,7 +121,7 @@ alertDelete(BuildContext ctx, index) {
       builder: (ctx1) {
         return AlertDialog(
           // title: Text('Delete'),
-          content: Text('Do you want to delete this?'),
+          content: const Text('Do you want to delete this?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, 'Cancel'),
@@ -141,8 +132,6 @@ alertDelete(BuildContext ctx, index) {
                 if (index != null) {
                   deleteStudent(index);
                   Navigator.pop(ctx);
-                } else {
-                  print('student id is null unable to delete');
                 }
               },
               child: const Text('Delete'),

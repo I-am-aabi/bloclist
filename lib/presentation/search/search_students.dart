@@ -2,17 +2,18 @@ import 'package:bloclist/db/model/data_model.dart';
 import 'package:bloclist/presentation/student_details/student_details.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+final List<StudentModel> studentBoxList =
+    Hive.box<StudentModel>('student_db').values.toList();
+final searchprovider =
+    StateProvider<List<StudentModel>>(((ref) => studentBoxList));
 
-  @override
-  State<SearchScreen> createState() => _SearchScreenState();
-}
+class SearchScreen extends ConsumerWidget {
+  SearchScreen({Key? key}) : super(key: key);
 
-class _SearchScreenState extends State<SearchScreen> {
   final _searchController = TextEditingController();
 
   final List<StudentModel> studentBoxList =
@@ -20,18 +21,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
   late List<StudentModel> displayStudent =
       List<StudentModel>.from(studentBoxList);
-
-  void searchStudentList(String value) {
-    setState(() {
-      displayStudent = studentBoxList
-          .where((element) =>
-              element.name.toLowerCase().contains(value.toLowerCase()))
-          .toList();
-    });
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final values = ref.watch(searchprovider);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Search Students"),
@@ -47,12 +39,17 @@ class _SearchScreenState extends State<SearchScreen> {
                     border: OutlineInputBorder(), hintText: 'Search'),
                 controller: _searchController,
                 onChanged: (value) {
-                  searchStudentList(value);
+                  ref.read(searchprovider.notifier).state = studentBoxList
+                      .where((element) => element.name
+                          .toLowerCase()
+                          .contains(value.toLowerCase()))
+                      .toList();
+                  displayStudent = values;
                 },
               ),
             ),
             Expanded(
-              child: (displayStudent.length != 0)
+              child: (displayStudent.isNotEmpty)
                   ? ListView.separated(
                       itemBuilder: (context, index) {
                         File imageFile = File(displayStudent[index].image);
@@ -80,14 +77,14 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  goto(int index) async {
+  goto(int index, ctx) async {
     final studentBoxList = await Hive.openBox<StudentModel>('Student');
 
     final stud = studentBoxList.getAt(index);
     if (stud == null) {
       return const Text('null');
     } else {
-      return Navigator.of(context).push(
+      return Navigator.of(ctx).push(
         MaterialPageRoute(
           builder: (ctx) => ShowDetails(
             data: stud,

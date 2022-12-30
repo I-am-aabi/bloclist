@@ -1,32 +1,26 @@
-
 import 'package:bloclist/presentation/HomeScreen/home_nav.dart';
 import 'package:bloclist/presentation/StudentList/students_nav.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ScreenHome extends StatefulWidget {
-  const ScreenHome({super.key});
+final pageprovider = StateProvider<int>((ref) => 0);
 
-  @override
-  State<ScreenHome> createState() => _ScreenHomeState();
-}
-
-class _ScreenHomeState extends State<ScreenHome> {
-  int _currentSelectedIndex = 0;
+class ScreenHome extends ConsumerWidget {
+  ScreenHome({super.key});
   final _pages = [
     const HomeNav(),
     const StudentsNav(),
   ];
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final value = ref.watch(pageprovider);
     return Scaffold(
-      body: _pages[_currentSelectedIndex],
-      // ignore: prefer_const_literals_to_create_immutables
+      body: _pages[value],
       bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentSelectedIndex,
-          onTap: (newIndex) {
-            setState(() {
-              _currentSelectedIndex = newIndex;
-            });
+          currentIndex: value,
+          onTap: (newindex) {
+            ref.read(pageprovider.notifier).state = newindex;
           },
           items: const [
             BottomNavigationBarItem(

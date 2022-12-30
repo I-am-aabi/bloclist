@@ -1,7 +1,11 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:bloclist/db/functions/db_functions.dart';
 import 'package:bloclist/db/model/data_model.dart';
 import 'package:bloclist/presentation/Add/widgets/text_field.dart';
+import 'package:bloclist/presentation/StudentList/students_nav.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:io';
 
@@ -9,31 +13,26 @@ import 'package:image_picker/image_picker.dart';
 
 import '../Add/add_students.dart';
 
-class EditStudents extends StatefulWidget {
+
+
+class EditStudents extends ConsumerWidget {
   EditStudents({super.key, required this.index, required this.data});
 
   int index;
   StudentModel data;
+  
 
-  @override
-  State<EditStudents> createState() => _EditStudentsState();
-}
-
-class _EditStudentsState extends State<EditStudents> {
   String? path;
-  @override
-  void initState() {
-    nameController.text = widget.data.name;
-    ageController.text = widget.data.age;
-    placeController.text = widget.data.place;
-    phoneController.text = widget.data.phone;
-    path = widget.data.image;
-    path = widget.data.image;
-    super.initState();
-  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // ref.read(imageProvider.notifier).state = data.image;
+    final value = ref.watch(imageProvider);
+    nameController.text = data.name;
+    ageController.text = data.age;
+    placeController.text = data.place;
+    phoneController.text = data.phone;
+    path = data.image;
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -58,7 +57,7 @@ class _EditStudentsState extends State<EditStudents> {
                   CircleAvatar(
                     radius: 90,
                     backgroundImage: FileImage(
-                      File(widget.data.image),
+                      File(value),
                     ),
                   ),
                   const SizedBox(
@@ -66,35 +65,35 @@ class _EditStudentsState extends State<EditStudents> {
                   ),
                   MyTextField(
                       controller: nameController,
-                      hint: widget.data.name,
+                      hint: data.name,
                       icon: Icons.abc_rounded),
                   const SizedBox(
                     height: 8,
                   ),
                   MyTextField(
                       controller: ageController,
-                      hint: widget.data.age,
+                      hint: data.age,
                       icon: Icons.numbers),
                   const SizedBox(
                     height: 8,
                   ),
                   MyTextField(
                       controller: placeController,
-                      hint: widget.data.place,
+                      hint: data.place,
                       icon: Icons.location_on),
                   const SizedBox(
                     height: 8,
                   ),
                   MyTextField(
                       controller: phoneController,
-                      hint: widget.data.phone,
+                      hint: data.phone,
                       icon: Icons.phone),
                   const SizedBox(
                     height: 8,
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
-                      getImage();
+                      getImage(ref);
                     },
                     label: const Text('+'),
                     icon: const Icon(Icons.photo),
@@ -107,7 +106,7 @@ class _EditStudentsState extends State<EditStudents> {
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
-                      Edit(widget.index);
+                      Edit(index,value);
                       Navigator.pop(context);
                     },
                     label: const Text('Save'),
@@ -122,13 +121,13 @@ class _EditStudentsState extends State<EditStudents> {
     );
   }
 
-  Future<void> Edit(int index) async {
+  Future<void> Edit(int index, value) async {
     final name = nameController.text.trim();
     final age = ageController.text.trim();
     final place = placeController.text.trim();
     final phone = phoneController.text.trim();
     final key = DateTime.now().toString();
-    final image = path!;
+    final image = value;
     final _student = StudentModel(
         name: name,
         age: age,
@@ -141,16 +140,13 @@ class _EditStudentsState extends State<EditStudents> {
     getAllStudents();
   }
 
-  getImage() async {
-    var path;
+  getImage(WidgetRef ref) async {
     final PickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (PickedFile == null) {
       return;
     } else {
-      setState(() {
-        this.path = PickedFile.path;
-      });
+      ref.read(imageProvider.notifier).state = PickedFile.path;
     }
   }
 }

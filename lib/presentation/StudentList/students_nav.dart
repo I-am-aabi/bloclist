@@ -1,14 +1,15 @@
-
 import 'package:bloclist/db/functions/db_functions.dart';
 import 'package:bloclist/db/model/data_model.dart';
 import 'package:bloclist/presentation/student_details/student_details.dart';
 import 'package:bloclist/presentation/Add/add_students.dart';
 import 'package:bloclist/presentation/Edit/edit_students.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 
 import '../search/search_students.dart';
 
+var imageProvider = StateProvider<String>(((ref) => ''));
 class StudentsNav extends StatelessWidget {
   const StudentsNav({super.key});
 
@@ -23,16 +24,16 @@ class StudentsNav extends StatelessWidget {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Student List'),
+                const Text('Student List'),
                 IconButton(
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (ctx) => SearchScreen(),
+                        builder: (ctx) =>  SearchScreen(),
                       ),
                     );
                   },
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                 ),
               ],
             ),
@@ -69,13 +70,15 @@ class StudentsNav extends StatelessWidget {
                           print('No key found.');
                         }
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.delete,
                         color: Colors.red,
                       ),
                     ),
                     IconButton(
                       onPressed: () {
+                        imageProvider =
+                            StateProvider<String>(((ref) => data.image));
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -84,7 +87,7 @@ class StudentsNav extends StatelessWidget {
                           ),
                         );
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.edit,
                         color: Colors.red,
                       ),

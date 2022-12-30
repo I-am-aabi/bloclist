@@ -4,6 +4,7 @@ import 'package:bloclist/presentation/home/home.dart';
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 Future<void> main() async {
@@ -13,7 +14,7 @@ Future<void> main() async {
     Hive.registerAdapter(StudentModelAdapter());
   }
   await getAllStudents();
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const ScreenHome(),
+      home:  ScreenHome(),
       debugShowCheckedModeBanner: false,
     );
   }
