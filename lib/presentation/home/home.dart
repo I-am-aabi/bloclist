@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final pageprovider = StateProvider<int>((ref) => 0);
 
-class ScreenHome extends ConsumerWidget {
+class ScreenHome extends StatelessWidget {
   ScreenHome({super.key});
   final _pages = [
     const HomeNav(),
@@ -13,25 +13,28 @@ class ScreenHome extends ConsumerWidget {
   ];
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final value = ref.watch(pageprovider);
-    return Scaffold(
-      body: _pages[value],
-      bottomNavigationBar: BottomNavigationBar(
-          currentIndex: value,
-          onTap: (newindex) {
-            ref.read(pageprovider.notifier).state = newindex;
-          },
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'students',
-            ),
-          ]),
-    );
+  Widget build(BuildContext context) {
+    return Consumer(builder: (context, ref, child) {
+          final value = ref.watch(pageprovider);
+      return
+      Scaffold(
+        body: _pages[value],
+        bottomNavigationBar: BottomNavigationBar(
+            currentIndex: value,
+            onTap: (newindex) {
+              ref.read(pageprovider.notifier).state = newindex;
+            },
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'students',
+              ),
+            ]),
+      );
+    });
   }
 }

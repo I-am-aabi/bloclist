@@ -13,21 +13,16 @@ import 'package:image_picker/image_picker.dart';
 
 import '../Add/add_students.dart';
 
-
-
-class EditStudents extends ConsumerWidget {
+class EditStudents extends StatelessWidget {
   EditStudents({super.key, required this.index, required this.data});
 
   int index;
   StudentModel data;
-  
 
   String? path;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // ref.read(imageProvider.notifier).state = data.image;
-    final value = ref.watch(imageProvider);
+  Widget build(BuildContext context) {
     nameController.text = data.name;
     ageController.text = data.age;
     placeController.text = data.place;
@@ -54,12 +49,15 @@ class EditStudents extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 // ignore: prefer_const_literals_to_create_immutables
                 children: [
-                  CircleAvatar(
-                    radius: 90,
-                    backgroundImage: FileImage(
-                      File(value),
-                    ),
-                  ),
+                  Consumer(builder: (context, ref, child) {
+                    final value = ref.watch(imageProvider);
+                    return CircleAvatar(
+                      radius: 90,
+                      backgroundImage: FileImage(
+                        File(value),
+                      ),
+                    );
+                  }),
                   const SizedBox(
                     height: 15,
                   ),
@@ -91,22 +89,28 @@ class EditStudents extends ConsumerWidget {
                   const SizedBox(
                     height: 8,
                   ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      getImage(ref);
+                  Consumer(
+                    builder: (context, ref, child) {
+                      return ElevatedButton.icon(
+                        onPressed: () async {
+                          path = await getImage();
+                          ref.read(imageProvider.notifier).state = path!;
+                        },
+                        label: const Text('+'),
+                        icon: const Icon(Icons.photo),
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.grey),
+                        ),
+                      );
                     },
-                    label: const Text('+'),
-                    icon: const Icon(Icons.photo),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.grey),
-                    ),
                   ),
                   const SizedBox(
                     height: 8,
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
-                      Edit(index,value);
+                      Edit(index, path);
                       Navigator.pop(context);
                     },
                     label: const Text('Save'),
@@ -140,13 +144,13 @@ class EditStudents extends ConsumerWidget {
     getAllStudents();
   }
 
-  getImage(WidgetRef ref) async {
+  getImage() async {
     final PickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (PickedFile == null) {
       return;
     } else {
-      ref.read(imageProvider.notifier).state = PickedFile.path;
+      return PickedFile.path;
     }
   }
 }
